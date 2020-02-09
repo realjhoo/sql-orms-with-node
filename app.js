@@ -1,32 +1,20 @@
-const Sequelize = require("sequelize");
+const db = require("./db");
+const { Movie } = db.models;
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "movies.db"
-});
-
-// movie model
-class Movie extends Sequelize.Model {}
-Movie.init(
-  {
-    title: Sequelize.STRING
-  },
-  { sequelize }
-); // same as {sequelize: sequelize}
-
-// async IIFE
 (async () => {
-  // sync "Movies" table
-  await sequelize.sync({ force: true });
+  await db.sequelize.sync({ force: true });
+
   try {
-    // instance of Movie class represents a database row
     const movie = await Movie.create({
       title: "Toy Story"
     });
     console.log(movie.toJSON());
-    await sequelize.authenticate();
-    console.log("Connected to database...");
+
+    const movie2 = await Movie.create({
+      title: "The Incredibles"
+    });
+    console.log(movie2.toJSON());
   } catch (error) {
-    console.error("Error connecting to the database: ", error);
+    console.error("Error connecting to database: ", error);
   }
 })();
